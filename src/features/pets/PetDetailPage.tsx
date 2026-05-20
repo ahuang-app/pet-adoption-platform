@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { usePet } from './usePets'
 import LoadingState from '@/shared/LoadingState'
 import ErrorState from '@/shared/ErrorState'
-import { Heart, Shield, Stethoscope, MapPin, PawPrint } from 'lucide-react'
+import { Heart, Stethoscope, MapPin, PawPrint } from 'lucide-react'
 
 const sizeLabel: Record<string, string> = { small: '小型', medium: '中型', large: '大型' }
 
