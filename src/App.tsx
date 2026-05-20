@@ -3,13 +3,14 @@ import Layout from '@/shared/Layout'
 import AuthProvider from '@/features/auth/AuthProvider'
 import LoginPage from '@/features/auth/LoginPage'
 import RegisterPage from '@/features/auth/RegisterPage'
+import HomePage from '@/features/home/HomePage'
 
 export default function App() {
   return (
     <AuthProvider>
       <Routes>
         <Route element={<Layout />}>
-          <Route index element={<div className="p-8 text-center text-earth-500">首页 — 开发中</div>} />
+          <Route index element={<HomePage />} />
           <Route path="pets/:id" element={<div className="p-8 text-center text-earth-500">宠物详情 — 开发中</div>} />
           <Route path="search" element={<div className="p-8 text-center text-earth-500">搜索结果 — 开发中</div>} />
           <Route path="adopt/:petId" element={<div className="p-8 text-center text-earth-500">领养申请 — 开发中</div>} />
