@@ -30,7 +30,12 @@
       "Bash(GIT_CURL_VERBOSE=1 git push origin master)",
       "Bash(GIT_HTTP_LOW_SPEED_LIMIT=0 GIT_HTTP_LOW_SPEED_TIME=999999 git push origin master --verbose)",
       "Bash(gh secret *)",
-      "Bash(npx tsc *)"
+      "Bash(npx tsc *)",
+      "Bash(ping -n 1 github.com)",
+      "Bash(curl -s --connect-timeout 30 https://github.com -o /dev/null -w \"HTTP: %{http_code}\\\\n\")",
+      "Bash(ssh -o ConnectTimeout=10 -o StrictHostKeyChecking=no -T git@github.com)",
+      "Bash(ssh-keygen -t ed25519 -C \"dev@pet-adoption\" -f ~/.ssh/id_ed25519 -N \"\")",
+      "Bash(gh ssh-key *)"
     ]
   }
 }

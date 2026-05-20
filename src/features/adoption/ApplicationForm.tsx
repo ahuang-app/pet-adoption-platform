@@ -7,10 +7,11 @@ import { useSubmitApplication } from './useApplications'
 import { useAuth } from '@/features/auth/useAuth'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
+import emailjs from '@emailjs/browser'
 
-const SEND_EMAIL_FN = import.meta.env.VITE_SUPABASE_EDGE_URL
-  ? `${import.meta.env.VITE_SUPABASE_EDGE_URL}/functions/v1/send-email`
-  : null
+const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || ''
+const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || ''
+const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || ''
 
 interface Props { petId: number; petName: string }
 
@@ -37,7 +38,6 @@ export default function ApplicationForm({ petId, petName }: Props) {
     setError('')
     if (!name.trim() || !phone.trim()) { setError('请填写必填项'); return }
 
-    // Ensure user profile exists (fixes FK constraint error when auth trigger fails)
     const { data: profile } = await supabase.from('users').select('id').eq('id', user.id).single()
     if (!profile) {
       const { error: insertError } = await supabase.from('users').insert({
@@ -53,13 +53,14 @@ export default function ApplicationForm({ petId, petName }: Props) {
       { user_id: user.id, pet_id: petId, name, phone, message },
       {
         onSuccess: () => {
-          // Attempt to send email notification via Edge Function (non-blocking)
-          if (SEND_EMAIL_FN) {
-            fetch(SEND_EMAIL_FN, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ name, phone, message, petName }),
-            }).catch(() => { /* silently ignore email failures */ })
+          if (EMAILJS_SERVICE_ID && EMAILJS_TEMPLATE_ID && EMAILJS_PUBLIC_KEY) {
+            emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+              to_email: '2149620045@qq.com',
+              from_name: name,
+              phone,
+              pet_name: petName,
+              message: message || '无',
+            }, EMAILJS_PUBLIC_KEY).catch(() => {})
           }
           navigate('/dashboard')
         },
