@@ -120,6 +120,22 @@ EXCEPTION WHEN duplicate_object THEN
   NULL;
 END $$;
 
+-- Storage 策略：允许认证用户上传头像
+INSERT INTO storage.buckets (id, name, public) VALUES ('avatars', 'avatars', true)
+ON CONFLICT (id) DO NOTHING;
+
+DROP POLICY IF EXISTS "允许认证用户上传头像" ON storage.objects;
+CREATE POLICY "允许认证用户上传头像" ON storage.objects
+  FOR INSERT WITH CHECK (bucket_id = 'avatars' AND auth.role() = 'authenticated');
+
+DROP POLICY IF EXISTS "允许认证用户更新头像" ON storage.objects;
+CREATE POLICY "允许认证用户更新头像" ON storage.objects
+  FOR UPDATE WITH CHECK (bucket_id = 'avatars' AND auth.role() = 'authenticated');
+
+DROP POLICY IF EXISTS "任何人查看头像" ON storage.objects;
+CREATE POLICY "任何人查看头像" ON storage.objects
+  FOR SELECT USING (bucket_id = 'avatars');
+
 -- 种子数据：物种
 INSERT INTO species (id, name, icon) VALUES
   (1, '狗', '🐕'), (2, '猫', '🐈'), (3, '兔', '🐰')
@@ -156,3 +172,11 @@ INSERT INTO success_stories (pet_name, before_image, after_image, story_text, ad
   ('小咪', 'https://images.unsplash.com/photo-1595433707802-6b2626ef1c91?w=400', 'https://images.unsplash.com/photo-1618826411640-d6df44dd3f7a?w=400', '小咪来自一个囤积救助案例——救助人员在仅有60平米的房子里发现了40多只猫。小咪当时被挤在角落里，瘦得肋骨一根根清晰可见，鼻子上还有和其他猫打架留下的伤疤。长期的恶劣环境让它对同类充满了恐惧，但对人却有一种说不清的依赖。经过半年的社会化和康复训练，小咪逐渐从一只惊恐的小猫变成了能够正常社交的猫咪。陈小姐是一名程序员，平时独自居住，她说小咪是她的"最佳编程搭档"——工作时安静地趴在电脑旁边，休息时会用爪子轻轻地碰碰她的手提醒她该起来活动一下了。陈小姐说："虽然我有几十个技术群聊，但现在最治愈的，是小咪用头蹭我手心的那个瞬间。"', '陈小姐'),
   ('球球', 'https://images.unsplash.com/photo-1535241749838-299277b6305f?w=400', 'https://images.unsplash.com/photo-1591047010878-b1ac5cd2b24c?w=400', '球球是一只被人遗弃在宠物店门口的荷兰垂耳兔，笼子外面贴了一张纸条写着"搬家无法带走，求好心人收养"。宠物店老板联系了救助站，球球就这样来到了小动物保护协会。它的一只耳朵因为小时候受过伤而无法完全垂下来，看上去总是一高一低的，但这反而成了它最可爱的标志。刘女士带着两个女儿来救助站本来是看猫的，结果大女儿看到球球后就走不动路了。小女儿蹲下来伸出手指，球球竟然主动凑上来闻了闻，然后用头蹭了蹭她的手指。那一刻，母女三人都被征服了。现在球球住在刘女士家客厅的大兔笼里，每天放风时间一到，两个小姑娘就抢着陪它玩。球球最喜欢用鼻子拱姐姐的脚踝，然后一蹦一跳地跑开，像是邀请她们来追自己。', '刘女士一家'),
   ('旺财', 'https://images.unsplash.com/photo-1558929996-da64a16e0f23?w=400', 'https://images.unsplash.com/photo-1544568100-847a948585b9?w=400', '旺财是一只11岁的老年金毛，在救助站里大家都叫它"老干部"。它的前主人因病去世后，主人的子女都不愿意收养它，旺财便来到了救助站。年迈的旺财行动缓慢，耳朵也不太灵光了，但那双眼睛依然温和而充满智慧。很多人来看宠物时都会忽略它，因为它太老了——直到周先生的出现。周先生今年65岁，退休后独自生活，他说："我不需要一只能陪我跑马拉松的狗，我需要的是一个能陪我慢慢走完余生路的伙伴。"旺财到新家后适应得出奇地好，它很快就弄清楚了自己该在哪里吃饭、在哪里睡觉。每天清晨，周先生和旺财会一起在小区的林荫道上慢慢散步，一老一犬成了小区里最温暖的风景线。邻居们都说，自从旺财来了，周先生的笑容明显多了。周先生说："别人都说我在做善事收养了一只老狗，但其实是旺财在陪伴我度过退休后的每一天。"', '周先生');
+
+-- 领养申请邮件通知（通过数据库触发器）
+-- 注意：需要在 Supabase Dashboard 中启用 pg_net 扩展
+-- CREATE EXTENSION IF NOT EXISTS pg_net;
+-- 然后创建触发器函数来调用外部邮件 API
+
+-- 去重：删除重复宠物（保留最早创建的记录）
+DELETE FROM pets a USING pets b WHERE a.id > b.id AND a.name = b.name AND a.species_id = b.species_id;

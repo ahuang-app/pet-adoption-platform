@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion'
 import HeroSection from './HeroSection'
 import SearchBar from './SearchBar'
 import SuccessStoriesScroll from './SuccessStoriesScroll'
@@ -18,10 +19,15 @@ export default function HomePage() {
       <SearchBar />
       <section className="py-16 bg-warm-50">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-8"
+          >
             <p className="text-warm-500 font-semibold text-sm uppercase tracking-wide mb-2">遇见你的伙伴</p>
             <h2 className="text-2xl font-bold text-earth-700">等待领养的可爱伙伴</h2>
-          </div>
+          </motion.div>
           {isLoading && <LoadingState rows={1} cols={4} />}
           {error && <ErrorState message="加载宠物列表失败" onRetry={() => refetch()} />}
           {pets && <PetCardGrid pets={pets.slice(0, 4)} />}
@@ -30,7 +36,9 @@ export default function HomePage() {
       <WaveDivider color="fill-warm-50" />
       <SuccessStoriesScroll />
       <WaveDivider color="fill-white" flip />
-      <ShelterWall />
+      <section className="relative overflow-hidden">
+        <ShelterWall />
+      </section>
       <WaveDivider color="fill-warm-50" />
       <FooterCTA />
     </>

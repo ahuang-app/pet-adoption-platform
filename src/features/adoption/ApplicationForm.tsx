@@ -8,6 +8,10 @@ import { useAuth } from '@/features/auth/useAuth'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 
+const SEND_EMAIL_FN = import.meta.env.VITE_SUPABASE_EDGE_URL
+  ? `${import.meta.env.VITE_SUPABASE_EDGE_URL}/functions/v1/send-email`
+  : null
+
 interface Props { petId: number; petName: string }
 
 export default function ApplicationForm({ petId, petName }: Props) {
@@ -47,7 +51,20 @@ export default function ApplicationForm({ petId, petName }: Props) {
 
     mutation.mutate(
       { user_id: user.id, pet_id: petId, name, phone, message },
-      { onSuccess: () => navigate('/dashboard'), onError: (err) => setError(err.message) }
+      {
+        onSuccess: () => {
+          // Attempt to send email notification via Edge Function (non-blocking)
+          if (SEND_EMAIL_FN) {
+            fetch(SEND_EMAIL_FN, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ name, phone, message, petName }),
+            }).catch(() => { /* silently ignore email failures */ })
+          }
+          navigate('/dashboard')
+        },
+        onError: (err) => setError(err.message),
+      }
     )
   }
 

@@ -142,6 +142,11 @@
   --sidebar-ring: #ffb058;
 }
 
+.paw-bg {
+  background-image: radial-gradient(circle, var(--color-warm-200) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

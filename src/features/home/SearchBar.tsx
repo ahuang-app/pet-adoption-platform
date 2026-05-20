@@ -1,15 +1,22 @@
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Select, SelectContent, SelectTrigger } from '@/components/ui/select'
+import { SelectItem } from '@/components/ui/select'
 import { useUIStore } from '@/store/ui-store'
 import { useSpecies } from '@/features/pets/usePets'
 import type { PetSize } from '@/types'
 import { Search } from 'lucide-react'
 
+const sizeLabels: Record<string, string> = { small: '小型', medium: '中型', large: '大型' }
+
 export default function SearchBar() {
   const { filters, setFilters } = useUIStore()
   const { data: species } = useSpecies()
   const navigate = useNavigate()
+
+  const selectedSpecies = species?.find(s => s.id === filters.species_id)
+  const speciesDisplay = filters.species_id ? `${selectedSpecies?.icon || ''} ${selectedSpecies?.name || ''}` : '全部物种'
+  const sizeDisplay = filters.size ? sizeLabels[filters.size] : '不限'
 
   const handleSearch = () => {
     const params = new URLSearchParams()
@@ -27,7 +34,7 @@ export default function SearchBar() {
             <label className="text-sm text-earth-500 mb-1 block">物种</label>
             <Select value={filters.species_id ? String(filters.species_id) : ''}
               onValueChange={(v) => setFilters({ species_id: v ? Number(v) : undefined })}>
-              <SelectTrigger><SelectValue placeholder="全部物种" /></SelectTrigger>
+              <SelectTrigger><span className="text-sm">{speciesDisplay}</span></SelectTrigger>
               <SelectContent>
                 <SelectItem value="">全部物种</SelectItem>
                 {species?.map((s) => <SelectItem key={s.id} value={String(s.id)}>{s.icon} {s.name}</SelectItem>)}
@@ -37,7 +44,7 @@ export default function SearchBar() {
           <div className="w-32">
             <label className="text-sm text-earth-500 mb-1 block">体型</label>
             <Select value={filters.size || ''} onValueChange={(v) => setFilters({ size: (v as PetSize) || undefined })}>
-              <SelectTrigger><SelectValue placeholder="不限" /></SelectTrigger>
+              <SelectTrigger><span className="text-sm">{sizeDisplay}</span></SelectTrigger>
               <SelectContent>
                 <SelectItem value="">不限</SelectItem>
                 <SelectItem value="small">小型</SelectItem>

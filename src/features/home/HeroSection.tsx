@@ -117,6 +117,33 @@ export default function HeroSection() {
         </motion.div>
       </div>
 
+      {/* Floating decorative emoji elements */}
+      {(() => {
+        const emojis = ['🐾', '❤️', '🌟', '🐕', '🐈', '🐰', '💕', '✨', '🦴', '🎾', '🏠', '🌺']
+        return [...Array(12)].map((_, i) => (
+          <motion.div
+            key={`emoji-${i}`}
+            className="absolute text-2xl opacity-30 pointer-events-none select-none"
+            style={{
+              left: `${5 + (i * 7.8) % 90}%`,
+              top: `${8 + (i * 13.3) % 85}%`,
+            }}
+            animate={{
+              y: [0, -15, -30, -15, 0],
+              x: [0, 8, 0, -8, 0],
+              rotate: [0, 8, -8, 0],
+            }}
+            transition={{
+              duration: 5 + (i % 5),
+              repeat: Infinity,
+              delay: i * 0.6,
+            }}
+          >
+            {emojis[i]}
+          </motion.div>
+        ))
+      })()}
+
       <div className="absolute bottom-0 left-0 right-0">
         <WaveDivider color="fill-white" />
       </div>
