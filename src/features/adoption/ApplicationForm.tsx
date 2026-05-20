@@ -7,11 +7,6 @@ import { useSubmitApplication } from './useApplications'
 import { useAuth } from '@/features/auth/useAuth'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
-import emailjs from '@emailjs/browser'
-
-const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || ''
-const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || ''
-const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || ''
 
 interface Props { petId: number; petName: string }
 
@@ -52,18 +47,7 @@ export default function ApplicationForm({ petId, petName }: Props) {
     mutation.mutate(
       { user_id: user.id, pet_id: petId, name, phone, message },
       {
-        onSuccess: () => {
-          if (EMAILJS_SERVICE_ID && EMAILJS_TEMPLATE_ID && EMAILJS_PUBLIC_KEY) {
-            emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-              to_email: '2149620045@qq.com',
-              from_name: name,
-              phone,
-              pet_name: petName,
-              message: message || '无',
-            }, EMAILJS_PUBLIC_KEY).catch(() => {})
-          }
-          navigate('/dashboard')
-        },
+        onSuccess: () => navigate('/dashboard'),
         onError: (err) => setError(err.message),
       }
     )
