@@ -39,8 +39,8 @@ export default function PetCard({ pet, featured }: { pet: Pet; featured?: boolea
       viewport={{ once: true }}
       whileHover={{ y: -8 }}
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-      className="group relative bg-white rounded-2xl shadow-md overflow-hidden cursor-pointer
-                 hover:shadow-[0_12px_40px_rgba(255,156,48,0.2)] transition-shadow duration-300"
+      className="group relative bg-white rounded-2xl overflow-hidden cursor-pointer
+                 shadow-md hover:shadow-[0_16px_48px_rgba(255,156,48,0.18)] transition-shadow duration-300"
     >
       <Link to={`/pets/${pet.id}`}>
         <div className="relative overflow-hidden aspect-[4/3]">
@@ -51,22 +51,33 @@ export default function PetCard({ pet, featured }: { pet: Pet; featured?: boolea
             whileHover={{ scale: 1.05 }}
             transition={{ duration: 0.4 }}
           />
+          {/* Hover gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-warm-500/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
           {pet.is_adopted && (
-            <div className="absolute top-3 right-3 bg-green-500 text-white text-xs px-3 py-1 rounded-full">已被领养</div>
+            <div className="absolute top-3 left-3 bg-green-500 text-white text-xs px-3 py-1 rounded-full shadow-md">
+              已被领养
+            </div>
           )}
-          <button
+
+          {/* Favorite button - top right with white circle background */}
+          <motion.button
             onClick={handleFavoriteClick}
-            className="absolute top-3 left-3 p-2 rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-colors"
+            whileTap={{ scale: 0.85 }}
+            className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm shadow-md
+                       flex items-center justify-center hover:bg-white transition-colors z-10"
             title={isFavorited ? '取消收藏' : '收藏'}
           >
             <Heart
-              className={`w-5 h-5 transition-colors ${isFavorited ? 'fill-red-500 text-red-500' : 'text-gray-400 hover:text-red-400'}`}
+              className={`w-4.5 h-4.5 transition-all duration-200 ${
+                isFavorited ? 'fill-red-500 text-red-500 scale-110' : 'text-gray-400 hover:text-red-400'
+              }`}
             />
-          </button>
+          </motion.button>
         </div>
         <div className="p-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-bold text-earth-700">{pet.name}</h3>
+            <h3 className="text-lg font-bold text-earth-700 group-hover:text-warm-600 transition-colors">{pet.name}</h3>
             <span className="text-sm text-earth-400">{pet.age}岁</span>
           </div>
           <p className="text-sm text-earth-400 mt-1">
@@ -74,7 +85,9 @@ export default function PetCard({ pet, featured }: { pet: Pet; featured?: boolea
           </p>
           <div className="flex gap-2 mt-3 flex-wrap">
             {pet.traits?.slice(0, 3).map((trait) => (
-              <span key={trait} className="bg-warm-100 text-warm-700 text-xs px-3 py-1 rounded-full">{trait}</span>
+              <span key={trait} className="bg-warm-100 text-warm-700 text-xs px-3 py-1 rounded-full">
+                {trait}
+              </span>
             ))}
           </div>
         </div>
