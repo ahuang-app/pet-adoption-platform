@@ -1,0 +1,9 @@
+{
+  "name": "暖心领养 - 宠物领养平台",
+  "short_name": "暖心领养",
+  "theme_color": "#FF9C30",
+  "background_color": "#FFF8F0",
+  "display": "standalone",
+  "start_url": "/",
+  "icons": []
+}
