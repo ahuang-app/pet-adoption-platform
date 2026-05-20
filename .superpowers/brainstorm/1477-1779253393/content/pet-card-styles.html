@@ -1,0 +1,60 @@
+<h2>宠物卡片风格 — 三种设计方向</h2>
+<p class="subtitle">hover 时有动态效果（浮起、缩放、翻转等），请选择最符合「暖心领养平台」气质的风格</p>
+
+<div class="cards">
+  <div class="card" data-choice="warm" onclick="toggleSelect(this)">
+    <div class="card-image" style="background: linear-gradient(135deg, #fff3e0, #ffe0b2); padding: 32px 20px 20px; text-align: center; border-radius: 24px;">
+      <div style="width: 120px; height: 120px; background: linear-gradient(135deg, #f8bbd0, #f48fb1); border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 48px;">🐕</div>
+      <div style="font-weight: 700; font-size: 18px; color: #5d4037;">Buddy · 2岁</div>
+      <div style="font-size: 13px; color: #8d6e63; margin-top: 4px;">金毛寻回犬 · 中型</div>
+      <div style="display: flex; gap: 6px; justify-content: center; margin-top: 10px;">
+        <span style="background: #ffcc80; color: #5d4037; padding: 3px 10px; border-radius: 12px; font-size: 11px;">🐾 温顺</span>
+        <span style="background: #ffcc80; color: #5d4037; padding: 3px 10px; border-radius: 12px; font-size: 11px;">🎾 活泼</span>
+      </div>
+      <div style="margin-top: 10px; font-size: 12px; color: #e65100;">hover ↑ 浮起 + 暖色光晕 + 图片放大</div>
+    </div>
+    <div class="card-body">
+      <h3>A. 温暖圆润风</h3>
+      <p>大圆角、柔阴影、暖色光晕。Hover 时卡片上浮 + 图片轻微放大，温馨治愈感最强。</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="modern" onclick="toggleSelect(this)">
+    <div class="card-image" style="background: #fafafa; padding: 32px 20px 20px; text-align: center; border-radius: 8px; border: 1px solid #e0e0e0;">
+      <div style="width: 120px; height: 120px; background: #eeeeee; border-radius: 8px; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 48px;">🐕</div>
+      <div style="font-weight: 600; font-size: 16px; color: #212121;">Buddy · 2岁</div>
+      <div style="font-size: 13px; color: #757575; margin-top: 4px;">金毛寻回犬 · 中型</div>
+      <div style="display: flex; gap: 6px; justify-content: center; margin-top: 10px;">
+        <span style="background: #e3f2fd; color: #1565c0; padding: 3px 10px; border-radius: 4px; font-size: 11px;">温顺</span>
+        <span style="background: #e3f2fd; color: #1565c0; padding: 3px 10px; border-radius: 4px; font-size: 11px;">活泼</span>
+      </div>
+      <div style="margin-top: 10px; font-size: 12px; color: #1565c0;">hover ↑ 微抬 + 边框高亮 + 简洁阴影</div>
+    </div>
+    <div class="card-body">
+      <h3>B. 现代简约风</h3>
+      <p>小圆角、细边框、留白多。Hover 时边框高亮 + 轻微上浮，克制、干净、专业。</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="playful" onclick="toggleSelect(this)">
+    <div class="card-image" style="background: linear-gradient(135deg, #fce4ec, #f3e5f5); padding: 32px 20px 20px; text-align: center; border-radius: 20px 4px 20px 4px;">
+      <div style="width: 110px; height: 110px; background: #fff; border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 48px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">🐕</div>
+      <div style="font-weight: 700; font-size: 18px; color: #4a148c;">Buddy · 2岁</div>
+      <div style="font-size: 13px; color: #7b1fa2; margin-top: 4px;">金毛寻回犬 · 中型</div>
+      <div style="display: flex; gap: 6px; justify-content: center; margin-top: 10px;">
+        <span style="background: #ffeb3b; color: #4a148c; padding: 3px 10px; border-radius: 20px 4px 20px 4px; font-size: 11px;">⚡ 温顺</span>
+        <span style="background: #ffeb3b; color: #4a148c; padding: 3px 10px; border-radius: 20px 4px 20px 4px; font-size: 11px;">🌟 活泼</span>
+      </div>
+      <div style="margin-top: 10px; font-size: 12px; color: #6a1b9a;">hover ↻ 翻转展示背面（性格/爱好详情）</div>
+    </div>
+    <div class="card-body">
+      <h3>C. 趣味活泼风</h3>
+      <p>异形裁边、不对称圆角、鲜明色彩。Hover 时卡片翻转展示宠物性格/故事，互动感强。</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>选择建议</h3>
+  <p>考虑到平台「暖心」「领养」的定位，<strong>推荐 A 风格</strong>：温暖圆润最能传递关爱与信赖感，与暖橙/大地色系天然契合。B 偏冷峻，C 偏童趣可能削弱「可信赖」感。</p>
+</div>
