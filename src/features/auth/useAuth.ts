@@ -1,3 +1,6 @@
+import { useContext } from 'react'
+import { AuthContext } from './AuthProvider'
+
 export function useAuth() {
-  return { user: null, loading: false, signOut: async () => {} }
+  return useContext(AuthContext)
 }
