@@ -122,14 +122,16 @@ END $$;
 
 -- 种子数据：物种
 INSERT INTO species (id, name, icon) VALUES
-  (1, '狗', '🐕'), (2, '猫', '🐈'), (3, '兔', '🐰');
+  (1, '狗', '🐕'), (2, '猫', '🐈'), (3, '兔', '🐰')
+ON CONFLICT (id) DO NOTHING;
 
 -- 种子数据：品种
 INSERT INTO breeds (id, species_id, name) VALUES
   (1, 1, '金毛寻回犬'), (2, 1, '拉布拉多'), (3, 1, '柯基'),
   (4, 2, '布偶猫'), (5, 2, '英短'), (6, 2, '橘猫'),
   (7, 3, '荷兰垂耳兔'), (8, 3, '侏儒兔'),
-  (9, 1, '柯基犬混血'), (10, 3, '狮子兔'), (11, 1, '中华田园犬');
+  (9, 1, '柯基犬混血'), (10, 3, '狮子兔'), (11, 1, '中华田园犬')
+ON CONFLICT (id) DO NOTHING;
 
 -- 种子数据：宠物
 INSERT INTO pets (name, age, species_id, breed_id, size, traits, image_url, health_status, shelter_info, description) VALUES
