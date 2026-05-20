@@ -29,7 +29,8 @@ export default function RegisterPage() {
     })
     if (error) { setError(error.message); setLoading(false); return }
     if (data.user) {
-      await supabase.from('users').insert({ id: data.user.id, name, email })
+      const { error: profileError } = await supabase.from('users').insert({ id: data.user.id, name, email })
+      if (profileError) { setError('创建用户资料失败: ' + profileError.message); setLoading(false); return }
       setSuccess('注册成功！请查收验证邮件')
     }
     setLoading(false)

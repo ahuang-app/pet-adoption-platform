@@ -63,6 +63,6 @@ export function useBreeds(speciesId?: number) {
       if (error) throw error
       return data
     },
-    enabled: true,
+    enabled: speciesId !== undefined,
   })
 }
