@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useQuery } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
@@ -13,6 +14,7 @@ const fetchStories = async (): Promise<SuccessStory[]> => {
 export default function SuccessStoriesScroll() {
   const { data: stories } = useQuery({ queryKey: ['success_stories'], queryFn: fetchStories })
   const ref = useRef<HTMLDivElement>(null)
+  const navigate = useNavigate()
 
   return (
     <section className="py-16 bg-warm-50">
@@ -23,8 +25,9 @@ export default function SuccessStoriesScroll() {
           whileTap={{ cursor: 'grabbing' }}>
           {stories?.map((story) => (
             <motion.div key={story.id} drag="x" dragConstraints={ref} dragElastic={0.1}
-              className="min-w-[300px] bg-white rounded-2xl shadow-md overflow-hidden flex-shrink-0"
-              whileHover={{ y: -4 }} transition={{ type: 'spring', stiffness: 300 }}>
+              className="min-w-[300px] bg-white rounded-2xl shadow-md overflow-hidden flex-shrink-0 cursor-pointer"
+              whileHover={{ y: -4 }} transition={{ type: 'spring', stiffness: 300 }}
+              onClick={() => navigate(`/stories/${story.id}`)}>
               <div className="flex">
                 <img src={story.before_image} alt="之前" className="w-1/2 h-40 object-cover" />
                 <img src={story.after_image} alt="之后" className="w-1/2 h-40 object-cover" />

@@ -6,6 +6,7 @@ import RegisterPage from '@/features/auth/RegisterPage'
 import HomePage from '@/features/home/HomePage'
 import SearchPage from '@/features/search/SearchPage'
 import PetDetailPage from '@/features/pets/PetDetailPage'
+import SuccessStoryDetail from '@/features/home/SuccessStoryDetail'
 import AdoptPage from '@/features/adoption/AdoptPage'
 import DashboardPage from '@/features/dashboard/DashboardPage'
 
@@ -16,6 +17,7 @@ export default function App() {
         <Route element={<Layout />}>
           <Route index element={<HomePage />} />
           <Route path="pets/:id" element={<PetDetailPage />} />
+          <Route path="stories/:id" element={<SuccessStoryDetail />} />
           <Route path="search" element={<SearchPage />} />
           <Route path="adopt/:petId" element={<AdoptPage />} />
           <Route path="login" element={<LoginPage />} />
