@@ -88,9 +88,13 @@ ALTER TABLE breeds ENABLE ROW LEVEL SECURITY;
 ALTER TABLE pets ENABLE ROW LEVEL SECURITY;
 ALTER TABLE success_stories ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "公开物种" ON species;
 CREATE POLICY "公开物种" ON species FOR SELECT USING (true);
+DROP POLICY IF EXISTS "公开品种" ON breeds;
 CREATE POLICY "公开品种" ON breeds FOR SELECT USING (true);
+DROP POLICY IF EXISTS "公开宠物" ON pets;
 CREATE POLICY "公开宠物" ON pets FOR SELECT USING (true);
+DROP POLICY IF EXISTS "公开故事" ON success_stories;
 CREATE POLICY "公开故事" ON success_stories FOR SELECT USING (true);
 
 -- RLS：用户私有数据
@@ -99,13 +103,22 @@ ALTER TABLE favorites ENABLE ROW LEVEL SECURITY;
 ALTER TABLE adoption_applications ENABLE ROW LEVEL SECURITY;
 ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "本人读写" ON users;
 CREATE POLICY "本人读写" ON users FOR ALL USING (auth.uid() = id);
+DROP POLICY IF EXISTS "本人读写收藏" ON favorites;
 CREATE POLICY "本人读写收藏" ON favorites FOR ALL USING (auth.uid() = user_id);
+DROP POLICY IF EXISTS "本人读写申请" ON adoption_applications;
 CREATE POLICY "本人读写申请" ON adoption_applications FOR ALL USING (auth.uid() = user_id);
+DROP POLICY IF EXISTS "本人读写通知" ON notifications;
 CREATE POLICY "本人读写通知" ON notifications FOR ALL USING (auth.uid() = user_id);
 
--- 启用 Realtime（通知表）
-ALTER PUBLICATION supabase_realtime ADD TABLE notifications;
+-- 启用 Realtime（通知表），重复执行安全
+DO $$
+BEGIN
+  ALTER PUBLICATION supabase_realtime ADD TABLE notifications;
+EXCEPTION WHEN duplicate_object THEN
+  NULL;
+END $$;
 
 -- 种子数据：物种
 INSERT INTO species (id, name, icon) VALUES
