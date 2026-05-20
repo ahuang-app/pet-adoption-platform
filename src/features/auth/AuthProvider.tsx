@@ -33,6 +33,24 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     return () => subscription.unsubscribe()
   }, [])
 
+  // Auto-create user profile when logged in (fixes FK constraint when auth trigger fails)
+  useEffect(() => {
+    if (user) {
+      supabase.from('users').select('id').eq('id', user.id).single().then(({ data }) => {
+        if (!data) {
+          supabase.from('users').insert({
+            id: user.id,
+            name: user.user_metadata?.name || user.email?.split('@')[0] || '用户',
+            email: user.email,
+            phone: user.phone,
+          }).then(({ error }) => {
+            if (error) console.error('Failed to create user profile:', error)
+          })
+        }
+      })
+    }
+  }, [user])
+
   const signOut = async () => {
     await supabase.auth.signOut()
     setUser(null)

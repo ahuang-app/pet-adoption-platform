@@ -40,14 +40,18 @@ export default function RegisterPage() {
     e.preventDefault()
     setError('')
     setSuccess('')
+    if (!phone || phone.length < 10) { setError('请输入有效的手机号'); return }
     setLoading(true)
+    // Normalize phone to international format (add +86 prefix if missing)
+    const formattedPhone = phone.startsWith('+') ? phone : `+86${phone}`
     const { data, error } = await supabase.auth.signUp({
-      phone, password,
-      options: { data: { name } },
+      phone: formattedPhone, password,
+      options: { data: { name, phone: formattedPhone } },
     })
     if (error) { setError(error.message); setLoading(false); return }
     if (data.user) {
-      await supabase.from('users').insert({ id: data.user.id, name, phone })
+      const { error: profileError } = await supabase.from('users').insert({ id: data.user.id, name, phone: formattedPhone })
+      if (profileError) { setError('创建用户资料失败: ' + profileError.message); setLoading(false); return }
       setSuccess('注册成功！')
       setTimeout(() => navigate('/login'), 1500)
     }
@@ -84,7 +88,7 @@ export default function RegisterPage() {
           <TabsContent value="phone">
             <form onSubmit={handlePhoneRegister} className="space-y-4">
               <div><Label>昵称</Label><Input value={name} onChange={(e) => setName(e.target.value)} placeholder="你的昵称" required /></div>
-              <div><Label>手机号</Label><Input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="13800138000" required /></div>
+              <div><Label>手机号</Label><Input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="你的手机号" required /></div>
               <div><Label>密码</Label><Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="至少6位" required minLength={6} /></div>
               {error && <p className="text-red-500 text-sm">{error}</p>}
               {success && <p className="text-green-500 text-sm">{success}</p>}

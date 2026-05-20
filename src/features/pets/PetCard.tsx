@@ -1,10 +1,36 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import { Heart } from 'lucide-react'
+import { useQuery } from '@tanstack/react-query'
+import { supabase } from '@/lib/supabase'
+import { useAuth } from '@/features/auth/useAuth'
+import { useToggleFavorite } from '@/features/dashboard/useFavorites'
 import type { Pet } from '@/types'
 
 const sizeLabel: Record<string, string> = { small: '小型', medium: '中型', large: '大型' }
 
 export default function PetCard({ pet, featured }: { pet: Pet; featured?: boolean }) {
+  const { user } = useAuth()
+  const navigate = useNavigate()
+  const toggleFavorite = useToggleFavorite()
+
+  const { data: isFavorited } = useQuery({
+    queryKey: ['favorites', user?.id, pet.id],
+    queryFn: async () => {
+      if (!user) return false
+      const { data } = await supabase.from('favorites').select('id').eq('user_id', user.id).eq('pet_id', pet.id).single()
+      return !!data
+    },
+    enabled: !!user,
+  })
+
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (!user) { navigate('/login'); return }
+    toggleFavorite.mutate({ userId: user.id, petId: pet.id, isFavorited: !!isFavorited })
+  }
+
   return (
     <motion.div
       layoutId={featured ? `pet-${pet.id}` : undefined}
@@ -28,6 +54,15 @@ export default function PetCard({ pet, featured }: { pet: Pet; featured?: boolea
           {pet.is_adopted && (
             <div className="absolute top-3 right-3 bg-green-500 text-white text-xs px-3 py-1 rounded-full">已被领养</div>
           )}
+          <button
+            onClick={handleFavoriteClick}
+            className="absolute top-3 left-3 p-2 rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-colors"
+            title={isFavorited ? '取消收藏' : '收藏'}
+          >
+            <Heart
+              className={`w-5 h-5 transition-colors ${isFavorited ? 'fill-red-500 text-red-500' : 'text-gray-400 hover:text-red-400'}`}
+            />
+          </button>
         </div>
         <div className="p-4">
           <div className="flex items-center justify-between">

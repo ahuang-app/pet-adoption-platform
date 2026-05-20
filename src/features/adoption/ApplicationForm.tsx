@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { useSubmitApplication } from './useApplications'
 import { useAuth } from '@/features/auth/useAuth'
 import { useNavigate } from 'react-router-dom'
+import { supabase } from '@/lib/supabase'
 
 interface Props { petId: number; petName: string }
 
@@ -27,10 +28,23 @@ export default function ApplicationForm({ petId, petName }: Props) {
     )
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
     if (!name.trim() || !phone.trim()) { setError('请填写必填项'); return }
+
+    // Ensure user profile exists (fixes FK constraint error when auth trigger fails)
+    const { data: profile } = await supabase.from('users').select('id').eq('id', user.id).single()
+    if (!profile) {
+      const { error: insertError } = await supabase.from('users').insert({
+        id: user.id,
+        name: user.user_metadata?.name || name,
+        email: user.email,
+        phone: user.phone || phone,
+      })
+      if (insertError) { setError('创建用户资料失败: ' + insertError.message); return }
+    }
+
     mutation.mutate(
       { user_id: user.id, pet_id: petId, name, phone, message },
       { onSuccess: () => navigate('/dashboard'), onError: (err) => setError(err.message) }

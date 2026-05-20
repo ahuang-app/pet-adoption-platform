@@ -25,21 +25,21 @@ export default function SearchBar() {
         <div className="flex flex-wrap gap-4 items-end justify-center">
           <div className="w-40">
             <label className="text-sm text-earth-500 mb-1 block">物种</label>
-            <Select value={filters.species_id ? String(filters.species_id) : '_all'}
-              onValueChange={(v) => setFilters({ species_id: v !== '_all' ? Number(v) : undefined })}>
+            <Select value={filters.species_id ? String(filters.species_id) : ''}
+              onValueChange={(v) => setFilters({ species_id: v ? Number(v) : undefined })}>
               <SelectTrigger><SelectValue placeholder="全部物种" /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="_all">全部物种</SelectItem>
+                <SelectItem value="">全部物种</SelectItem>
                 {species?.map((s) => <SelectItem key={s.id} value={String(s.id)}>{s.icon} {s.name}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
           <div className="w-32">
             <label className="text-sm text-earth-500 mb-1 block">体型</label>
-            <Select value={filters.size || '_all'} onValueChange={(v) => setFilters({ size: v !== '_all' ? (v as PetSize) : undefined })}>
+            <Select value={filters.size || ''} onValueChange={(v) => setFilters({ size: (v as PetSize) || undefined })}>
               <SelectTrigger><SelectValue placeholder="不限" /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="_all">不限</SelectItem>
+                <SelectItem value="">不限</SelectItem>
                 <SelectItem value="small">小型</SelectItem>
                 <SelectItem value="medium">中型</SelectItem>
                 <SelectItem value="large">大型</SelectItem>

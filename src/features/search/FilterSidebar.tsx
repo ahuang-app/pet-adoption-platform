@@ -21,11 +21,11 @@ export default function FilterSidebar() {
 
       <div>
         <Label>物种</Label>
-        <Select value={filters.species_id ? String(filters.species_id) : '_all'}
-          onValueChange={(v) => setFilters({ species_id: v !== '_all' ? Number(v) : undefined })}>
+        <Select value={filters.species_id ? String(filters.species_id) : ''}
+          onValueChange={(v) => setFilters({ species_id: v ? Number(v) : undefined })}>
           <SelectTrigger className="mt-1"><SelectValue placeholder="全部" /></SelectTrigger>
           <SelectContent>
-            <SelectItem value="_all">全部物种</SelectItem>
+            <SelectItem value="">全部物种</SelectItem>
             {species?.map((s) => <SelectItem key={s.id} value={String(s.id)}>{s.icon} {s.name}</SelectItem>)}
           </SelectContent>
         </Select>
@@ -33,10 +33,10 @@ export default function FilterSidebar() {
 
       <div>
         <Label>体型</Label>
-        <Select value={filters.size || '_all'} onValueChange={(v) => setFilters({ size: v !== '_all' ? (v as PetSize) : undefined })}>
+        <Select value={filters.size || ''} onValueChange={(v) => setFilters({ size: (v as PetSize) || undefined })}>
           <SelectTrigger className="mt-1"><SelectValue placeholder="不限" /></SelectTrigger>
           <SelectContent>
-            <SelectItem value="_all">不限</SelectItem>
+            <SelectItem value="">不限</SelectItem>
             <SelectItem value="small">小型</SelectItem>
             <SelectItem value="medium">中型</SelectItem>
             <SelectItem value="large">大型</SelectItem>

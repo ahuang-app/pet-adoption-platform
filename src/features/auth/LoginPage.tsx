@@ -29,10 +29,16 @@ export default function LoginPage() {
   const handlePhoneLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
+    if (!phone || phone.length < 10) { setError('请输入有效的手机号'); return }
     setLoading(true)
-    const { error } = await supabase.auth.signInWithPassword({ phone, password })
+    // Try phone auth first (requires phone provider enabled in Supabase dashboard)
+    let { error } = await supabase.auth.signInWithPassword({ phone, password })
+    // If phone auth fails, try as email (fallback for when phone provider not enabled)
+    if (error) {
+      const { error: emailError } = await supabase.auth.signInWithPassword({ email: phone, password })
+      if (emailError) { setError('登录失败，请检查手机号/邮箱和密码'); setLoading(false); return }
+    }
     setLoading(false)
-    if (error) { setError(error.message); return }
     navigate('/dashboard')
   }
 
@@ -63,7 +69,7 @@ export default function LoginPage() {
 
           <TabsContent value="phone">
             <form onSubmit={handlePhoneLogin} className="space-y-4">
-              <div><Label>手机号</Label><Input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="13800138000" required /></div>
+              <div><Label>手机号</Label><Input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="你的手机号" required /></div>
               <div><Label>密码</Label><Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••" required /></div>
               {error && <p className="text-red-500 text-sm">{error}</p>}
               <Button type="submit" className="w-full bg-warm-500 hover:bg-warm-600" disabled={loading}>{loading ? '登录中...' : '登录'}</Button>
